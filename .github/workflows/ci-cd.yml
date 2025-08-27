@@ -1,0 +1,229 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Detect changes to determine which services to build
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      ocr-service: ${{ steps.changes.outputs.ocr-service }}
+      mobile: ${{ steps.changes.outputs.mobile }}
+      infrastructure: ${{ steps.changes.outputs.infrastructure }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'backend.Dockerfile'
+            ocr-service:
+              - 'ocr-service/**'
+              - 'ocr-service.Dockerfile'
+            mobile:
+              - 'mobile/**'
+            infrastructure:
+              - 'infrastructure/**'
+              - 'docker-compose.yml'
+              - '.github/workflows/**'
+
+  # Backend service CI/CD
+  backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+            
+      - name: Install dependencies
+        run: go mod download
+        
+      - name: Run tests
+        run: go test -v ./...
+        
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v3
+        with:
+          working-directory: backend
+          
+      - name: Build binary
+        run: go build -o bin/smart-invoice-api ./cmd/api
+        
+      - name: Build and push Docker image
+        if: github.event_name == 'push'
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker build -t ghcr.io/${{ github.repository }}/backend:${{ github.sha }} -f ../backend.Dockerfile .
+          docker push ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+
+  # OCR Service CI/CD
+  ocr-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.ocr-service == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ocr-service
+        
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          
+      - name: Run linting
+        run: |
+          flake8 src/ tests/
+          black --check src/ tests/
+          
+      - name: Run tests
+        run: |
+          pytest tests/ --cov=src --cov-report=xml
+          
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          
+      - name: Build and push Docker image
+        if: github.event_name == 'push'
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker build -t ghcr.io/${{ github.repository }}/ocr-service:${{ github.sha }} -f ../ocr-service.Dockerfile .
+          docker push ghcr.io/${{ github.repository }}/ocr-service:${{ github.sha }}
+
+  # Mobile App CI
+  mobile:
+    needs: changes
+    if: ${{ needs.changes.outputs.mobile == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+        
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run linting
+        run: npm run lint
+        
+      - name: Run tests
+        run: npm test
+        
+      - name: Build for production
+        run: npm run build
+        
+      # For mobile apps, we typically build separate workflows for iOS/Android
+      # This is a placeholder for the basic checks
+
+  # Infrastructure and deployment
+  deploy-staging:
+    needs: [backend, ocr-service]
+    if: |
+      always() && 
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
+      (needs.ocr-service.result == 'success' || needs.ocr-service.result == 'skipped') &&
+      github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your staging deployment commands here
+          # e.g., kubectl apply, docker-compose up, etc.
+
+  deploy-production:
+    needs: [backend, ocr-service]
+    if: |
+      always() && 
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped') &&
+      (needs.ocr-service.result == 'success' || needs.ocr-service.result == 'skipped') &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment..."
+          # Add your production deployment commands here
+
+  # Security scanning
+  security:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'

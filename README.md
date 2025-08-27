@@ -1,94 +1,60 @@
-# Smart Invoice
+# Smart Invoice - AI-Powered Receipt Processing App
 
-A modern invoice management system built with Go backend and React frontend.
+An intelligent mobile application that captures invoices/receipts, extracts data using AI + OCR, and automatically fills Excel templates.
 
-## Features
+## Architecture
 
-- Generate professional invoices
-- Export to PDF and Excel formats
-- Template management
-- Database storage
-- RESTful API
+- **Mobile App**: React Native (iOS/Android)
+- **Backend API**: Go (REST API)
+- **OCR/AI Service**: Python (FastAPI)
+- **Database**: PostgreSQL
+- **Storage**: AWS S3 / Local storage
 
 ## Project Structure
 
 ```
-smart-invoice/
-│
-├── backend/                 # Go backend server
-│   ├── main.go             # Entry point
-│   ├── handlers/           # HTTP request handlers
-│   ├── templates/          # Invoice templates
-│   ├── services/           # Business logic services
-│   │   ├── pdf/           # PDF generation service
-│   │   └── excel/         # Excel export service
-│   └── db/                # Database models and migrations
-│
-├── frontend/               # React frontend application
-│   ├── src/               # Source code
-│   │   ├── components/    # React components
-│   │   ├── pages/        # Page components
-│   │   ├── hooks/        # Custom React hooks
-│   │   └── utils/        # Utility functions
-│   └── public/templates/  # Static template files
-│
-├── docker-compose.yml     # Docker compose configuration
-└── README.md             # This file
+├── mobile/          # React Native mobile app
+├── backend/         # Go API service
+├── ocr-service/     # Python OCR/AI service
+├── infrastructure/  # Docker, K8s, terraform configs
+├── docs/           # Documentation
+└── .github/        # CI/CD workflows
 ```
 
 ## Getting Started
 
 ### Prerequisites
+- Docker & Docker Compose
+- Node.js 18+ (for mobile development)
+- Go 1.21+ (for backend development)
+- Python 3.11+ (for OCR service)
 
-- Docker and Docker Compose
-- Go 1.19+ (for local development)
-- Node.js 18+ (for local development)
-
-### Running with Docker
-
+### Quick Start
 ```bash
-# Start all services
+# Clone the repository
+git clone <repo-url>
+cd smart-invoice
+
+# Start all services with Docker Compose
 docker-compose up -d
 
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-### Local Development
-
-#### Backend
-```bash
-cd backend
-go mod init smart-invoice
-go mod tidy
-go run main.go
-```
-
-#### Frontend
-```bash
-cd frontend
+# For mobile development
+cd mobile
 npm install
-npm start
+npx react-native run-ios  # or run-android
 ```
 
-## API Endpoints
+## Development Workflow
 
-- `GET /` - Health check
-- `POST /api/invoices` - Create new invoice
-- `GET /api/invoices/:id` - Get invoice by ID
-- `GET /api/invoices/:id/pdf` - Download invoice as PDF
-- `GET /api/invoices/:id/excel` - Download invoice as Excel
+1. Create feature branch from `main`
+2. Make changes and commit
+3. Push branch - CI pipeline runs automatically
+4. Create PR - triggers additional checks
+5. Merge to `main` - deploys to staging
+6. Tag release - deploys to production
 
-## Contributing
+## CI/CD Status
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-MIT License
+[![Backend CI](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/backend-ci.yml)
+[![OCR Service CI](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/ocr-ci.yml/badge.svg)](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/ocr-ci.yml)
+[![Mobile CI](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/mobile-ci.yml/badge.svg)](https://github.com/kamisettysudheer/smart-invoice/actions/workflows/mobile-ci.yml)

@@ -1,0 +1,25 @@
+# render.yaml - Render deployment configuration
+services:
+  - type: web
+    name: smart-invoice-mobile
+    env: docker
+    dockerfilePath: ./mobile/Dockerfile
+    dockerContext: ./mobile
+    plan: starter
+    region: oregon
+    branch: main
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: EXPO_PUBLIC_API_URL
+        value: https://your-backend-api.onrender.com/api/v1
+    healthCheckPath: /health
+    autoDeploy: true
+    buildFilter:
+      paths:
+      - mobile/**
+      ignoredPaths:
+      - mobile/README.md
+      - mobile/SETUP-GUIDE.md

@@ -1,0 +1,32 @@
+/* Web-specific styles for Expo web */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto; /* Enable scrolling */
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Ensure scrollable containers */
+.react-native-web-view {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+/* Fix for React Navigation in web */
+div[data-react-native-web="true"] {
+  height: 100%;
+  overflow: auto;
+}
+
+/* Ensure main container is scrollable */
+div[role="main"] {
+  overflow-y: auto;
+  flex: 1;
+}

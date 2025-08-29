@@ -1,20 +1,14 @@
 package handlers
 
 import (
-	"fmt"
-	"io"
 	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"smart-invoice-backend/internal/models"
-	"smart-invoice-backend/internal/services"
-	"smart-invoice-backend/internal/storage"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/models"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/services"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/storage"
 )
 
 // TemplateHandler handles template-related HTTP requests

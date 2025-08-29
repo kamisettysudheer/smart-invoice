@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 
-"internal/models"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/models"
 )
 
 const (

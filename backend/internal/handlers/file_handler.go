@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-"smart-invoice/backend/internal/models"
-"smart-invoice/backend/internal/storage"
+"github.com/kamisettysudheer/smart-invoice/backend/internal/models"
+"github.com/kamisettysudheer/smart-invoice/backend/internal/storage"
 )
 
 // UploadTemplateFile handles POST /templates/:id/upload

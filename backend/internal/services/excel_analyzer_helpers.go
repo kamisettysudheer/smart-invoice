@@ -7,7 +7,6 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/xuri/excelize/v2"
 )
 
 // smartSample intelligently samples rows for large sheets

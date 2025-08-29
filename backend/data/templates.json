@@ -1,0 +1,22 @@
+[
+  {
+    "id": "4b7660db-228b-4c71-9a5a-d1cab95577c9",
+    "name": "Generic Test Template",
+    "description": "Testing generic analysis",
+    "template_url": "/files/templates/4b7660db-228b-4c71-9a5a-d1cab95577c9_sample_invoice_template.xlsx",
+    "field_mappings": {},
+    "is_active": true,
+    "created_at": "2025-08-28T07:39:52+05:30",
+    "updated_at": "2025-08-28T09:37:02+05:30"
+  },
+  {
+    "id": "25b8f180-c957-475d-af80-9d93ad12f3b6",
+    "name": "Fillable Fields Test Template",
+    "description": "Testing fillable field patterns like [[name]], [AMOUNT], {{date}}, etc.",
+    "template_url": "/files/templates/25b8f180-c957-475d-af80-9d93ad12f3b6_sample_invoice_template.xlsx",
+    "field_mappings": {},
+    "is_active": true,
+    "created_at": "2025-08-28T09:37:26+05:30",
+    "updated_at": "2025-08-28T09:40:14+05:30"
+  }
+]

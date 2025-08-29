@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"smart-invoice-backend/internal/handlers"
-	"smart-invoice-backend/internal/middleware"
-	"smart-invoice-backend/internal/services"
-	"smart-invoice-backend/internal/storage"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/handlers"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/middleware"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/services"
+	"github.com/kamisettysudheer/smart-invoice/backend/internal/storage"
 )
 
 func main() {

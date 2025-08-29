@@ -1,4 +1,4 @@
-module github.com/kamisettysudheer/smart-invoice
+module github.com/kamisettysudheer/smart-invoice/backend
 
 go 1.21
 

@@ -84,19 +84,49 @@ GET    /api/v1/templates/:id/analyze - Analyze structure
 ## Getting Started
 
 ### Prerequisites
-- Docker & Docker Compose
-- Node.js 18+ (for mobile development)
-- Go 1.21+ (for backend development)
-- Python 3.11+ (for OCR service)
+- **Docker & Docker Compose** - For containerized deployment
+- **Node.js 18+** - For mobile development
+- **Go 1.21+** - For backend development
+- **Expo CLI** - For mobile development: `npm install -g @expo/cli`
+- **Python 3.11+** - For OCR service (optional)
 
-### Quick Start
+### Quick Start Development
+
+**1. Clone and Setup:**
 ```bash
 # Clone the repository
 git clone <repo-url>
 cd smart-invoice
+```
 
+**2. Backend Setup:**
+```bash
+cd backend
+go mod tidy
+go run ./cmd/api
+# Server starts on http://localhost:8080
+```
+
+**3. Mobile App Setup:**
+```bash
+cd mobile
+npm install
+npx expo start
+# Choose your platform:
+# - Press 'w' for web (http://localhost:8081)
+# - Press 'i' for iOS simulator
+# - Press 'a' for Android emulator
+# - Scan QR code for physical device
+```
+
+**4. Full Stack with Docker:**
+```bash
 # Start all services with Docker Compose
-docker-compose up -d
+docker-compose up --build
+# Backend API: http://localhost:8080
+# Mobile Web: http://localhost:8082  
+# Database: localhost:5432
+```
 
 # For mobile development
 cd mobile
@@ -170,34 +200,198 @@ Automatic content type recognition:
 - **Phone**: Digit density analysis for phone numbers
 - **Text**: Default classification with keyword extraction
 
-## 🚀 Getting Started (Updated)
+## 🚀 Getting Started (Development Guide)
 
-### Development Environment
+### Development Environment Setup
 
-**Backend (Refactored Go Service):**
+#### **Prerequisites Installation:**
 ```bash
-cd backend
-go mod tidy
-go run ./cmd/api
-# Server starts on http://localhost:8080
+# Install Node.js 18+ (https://nodejs.org/)
+# Install Go 1.21+ (https://golang.org/dl/)
+# Install Expo CLI globally
+npm install -g @expo/cli
+
+# Verify installations
+node --version    # Should be 18+
+go version       # Should be 1.21+
+npx expo --version
 ```
 
-**Mobile App (Expo with Material Design):**  
+#### **Backend Setup (Go Service):**
+```bash
+cd backend
+
+# Install dependencies
+go mod tidy
+
+# Create environment file (optional)
+cp .env.example .env
+
+# Run development server
+go run ./cmd/api
+# ✅ Server running on http://localhost:8080
+# ✅ API endpoints available at http://localhost:8080/api/v1/
+# ✅ Health check: http://localhost:8080/health
+```
+
+#### **Mobile App Setup (Expo + React Native):**
 ```bash
 cd mobile
+
+# Install dependencies
 npm install
-npm start
-# Expo development server on http://localhost:8082
+# or: yarn install
+
+# Start Expo development server
+npx expo start
+
+# Development Options:
+# 📱 Press 'w' → Open in web browser (http://localhost:8081)
+# 🍎 Press 'i' → Open iOS Simulator (requires Xcode)
+# 🤖 Press 'a' → Open Android Emulator (requires Android Studio)
+# 📲 Scan QR code → Open on physical device (install Expo Go app)
+
+# Alternative commands:
+npx expo start --web          # Web only
+npx expo start --ios          # iOS only  
+npx expo start --android      # Android only
+npx expo start --tunnel       # Tunnel for remote testing
+
+# Alternative using npm scripts:
+npm start                     # Same as: npx expo start
+npm run web                   # Same as: npx expo start --web
+npm run ios                   # Same as: npx expo start --ios
+npm run android               # Same as: npx expo start --android
+```
+
+#### **Mobile App Testing & Usage:**
+```bash
+# After starting the mobile app, you can:
+
+# 1. Test Template Management:
+#    → Create new templates
+#    → Upload Excel files (.xlsx)
+#    → View analysis results with fillable fields
+
+# 2. Test Excel Analysis:
+#    → Upload templates with patterns like [[customer_name]]
+#    → View detected fillable fields
+#    → Check data type recognition
+
+# 3. Development Tools:
+npx expo install --fix       # Fix dependency issues
+npx expo doctor              # Check project health  
+npx expo r --clear           # Restart with cache cleared
+
+# 4. Build for Testing:
+npx expo export              # Export for production
+npx expo build:web           # Build web version
+```
+
+#### **Full Stack Integration Testing:**
+```bash
+# 1. Start Backend (Terminal 1)
+cd backend && go run ./cmd/api
+
+# 2. Start Mobile App (Terminal 2)  
+cd mobile && npx expo start
+
+# 3. Test Complete Flow:
+#    → Open mobile app (web: http://localhost:8081)
+#    → Create a template
+#    → Upload Excel file with [[field]] patterns
+#    → View analysis results showing fillable fields
+#    → Verify backend API responses at http://localhost:8080/api/v1/
+
+# 4. Alternative: Docker Development
+docker-compose up --build
+# Everything runs together: backend + mobile + database
+```
+
+#### **Expo Development Tips:**
+```bash
+# Clear cache if experiencing issues
+npx expo start --clear
+
+# Check project configuration and dependencies
+npx expo doctor
+
+# Install missing dependencies (recommended over npm install for Expo projects)
+npx expo install --fix
+
+# Update Expo SDK (when needed)
+npx expo install --npm
+
+# Production web build and preview
+npx expo export:web
+npx serve dist      # Serve the built web app locally
+
+# EAS Build setup (for native app builds)
+npx eas build:configure    # First time setup
+npx eas build --platform android
+npx eas build --platform ios
+npx eas build --platform all
+
+# Alternative build commands (legacy Expo CLI)
+npx expo build:android     # Android APK  
+npx expo build:ios         # iOS IPA
+
+# Development with physical devices
+# 1. Install Expo Go from App Store/Play Store
+# 2. Run: npx expo start
+# 3. Scan QR code with camera (iOS) or Expo Go app (Android)
 ```
 
 ### Production Deployment
 
-**Full Stack with Docker Compose:**
+#### **Docker Compose (Recommended):**
 ```bash
+# Full stack deployment
 docker-compose up --build
+
+# Access points:
 # Backend API: http://localhost:8080
 # Mobile Web: http://localhost:8082  
 # Database: localhost:5432
+```
+
+#### **Individual Service Deployment:**
+
+**Backend Service:**
+```bash
+cd backend
+go build -o bin/server ./cmd/api
+./bin/server
+```
+
+**Mobile Web App (Expo Production Build):**
+```bash
+cd mobile
+
+# Build for web production
+npx expo export:web
+
+# The built files will be in 'dist/' directory
+# Serve with any static file server:
+npx serve dist                # Local testing
+# or copy dist/ to your web server
+```
+
+#### **Platform-Specific Mobile Builds:**
+```bash
+cd mobile
+
+# Web Production Build
+npx expo export:web
+
+# Native App Builds (requires EAS Build service)
+npx expo build:android       # Android APK
+npx expo build:ios           # iOS IPA
+
+# Alternative: EAS Build (modern approach)
+npx eas build --platform android
+npx eas build --platform ios
+npx eas build --platform all
 ```
 
 ## 📚 API Documentation

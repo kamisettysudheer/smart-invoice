@@ -62,7 +62,20 @@ const InvoicePreview = forwardRef<HTMLDivElement, Props>(
         <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
           Preview
         </h3>
-        <div ref={ref} style={{ background: '#fff', position: 'relative' }}>
+        <div
+          ref={ref}
+          style={{
+            background: '#fff',
+            position: 'relative',
+            width: '210mm',
+            minHeight: '297mm',
+            margin: '0 auto',
+            padding: '10mm',
+            boxSizing: 'border-box',
+            overflow: 'hidden',
+            boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+          }}
+        >
           <table
             style={{
               borderCollapse: 'collapse',

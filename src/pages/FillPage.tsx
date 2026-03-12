@@ -118,7 +118,7 @@ export default function FillPage() {
 
         {/* Hidden preview for PDF capture when preview is not shown */}
         {!showPreview && (
-          <div style={{ position: 'fixed', left: '-9999px', top: 0, visibility: 'hidden', overflow: 'hidden', width: 800 }}>
+          <div style={{ position: 'fixed', left: '-9999px', top: 0, visibility: 'hidden', overflow: 'hidden', width: '210mm' }}>
             <InvoicePreview ref={previewRef} template={template} values={values} />
           </div>
         )}

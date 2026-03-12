@@ -1,0 +1,18 @@
+fileignoreconfig:
+  - filename: package-lock.json
+    checksum: f1ac926fa8fc17988c1e52fba93b2f9f991b5a374987538c3c0adccc90d64594
+  - filename: vite-env.d.ts
+    checksum: 5a29bf5f366896aecc35bc9ae8656ae61be4db6ed610af161a8d3ae615a6f331
+  - filename: src/utils/storage.ts
+    checksum: bf89f0401eaf65eebce343eaee7eb6b9471b3b24f524b475fcdaa1ca53a36a48
+  - filename: src/utils/excelGenerator.ts
+    checksum: ff4f3bbace2bdd96e21abfb5ff5d2ae7d844a78bac8da2f1bb308d7fa1887abc
+  - filename: src/types/template.ts
+    checksum: 041dd9b471e9a9c5bde30d6ba02cf07d2437559e5e3709cab2bab92890b2a16d
+  - filename: src/components/DynamicForm.tsx
+    checksum: 1805363eb43a098f9484fb75905cef1cf706d52ef5fd0ef6c8db74f62a42f95e
+  - filename: src/components/InvoicePreview.tsx
+    checksum: adb3162189154f392d6ab71b7f18d73aa6092e7beb8309b4f2e8ff94b78e0b8b
+  - filename: src/utils/excelParser.ts
+    checksum: 6912cfee11308ba3188bbb4a4d3a002de8a61f085f56ed73ed0b3206a1bf5a32
+version: "1.0"

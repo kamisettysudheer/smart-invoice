@@ -20,6 +20,7 @@ const GROUP_RE = /^(.+?)_(.+?)_(\d+)$/
 
 function inferType(key: string): FieldType {
   const k = key.toLowerCase()
+  if (k.includes('words') || k.includes('in_words') || k.includes('in words')) return 'text'
   if (k.includes('date') || k.includes('due')) return 'date'
   if (
     k.includes('amount') || k.includes('total') || k.includes('subtotal') ||

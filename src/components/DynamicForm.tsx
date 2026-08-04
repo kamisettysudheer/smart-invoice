@@ -221,6 +221,7 @@ function humanize(s: string): string {
 
 function inferInputType(col: string): string {
   const c = col.toLowerCase()
+  if (c.includes('words') || c.includes('in_words') || c.includes('in words')) return 'text'
   if (c.includes('date')) return 'date'
   if (
     c.includes('qty') ||
@@ -236,6 +237,7 @@ function inferInputType(col: string): string {
 
 function inferInputMode(col: string): React.HTMLAttributes<HTMLInputElement>['inputMode'] {
   const c = col.toLowerCase()
+  if (c.includes('words') || c.includes('in_words') || c.includes('in words')) return 'text'
   if (
     c.includes('qty') ||
     c.includes('quantity') ||

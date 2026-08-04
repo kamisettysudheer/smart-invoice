@@ -7,7 +7,7 @@ import jsPDF from 'jspdf'
  */
 export async function generatePdfFromElement(element: HTMLElement, filename: string): Promise<void> {
   const canvas = await html2canvas(element, {
-    scale: 2,
+    scale: Math.max(2, window.devicePixelRatio || 1),
     useCORS: true,
     backgroundColor: '#ffffff',
     logging: false,
@@ -21,7 +21,7 @@ export async function generatePdfFromElement(element: HTMLElement, filename: str
   const imgHeight = canvas.height
 
   const pdfWidth = 210
-  const pdfMargin = 10
+  const pdfMargin = 0
   const contentWidth = pdfWidth - pdfMargin * 2
   const contentHeight = (imgHeight / imgWidth) * contentWidth
 

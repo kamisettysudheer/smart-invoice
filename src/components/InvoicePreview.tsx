@@ -232,6 +232,7 @@ function cellToInlineStyle(cell: RichCell): React.CSSProperties {
     }
     if (alignment.wrapText) s.whiteSpace = 'pre-wrap'
   }
+  if (!alignment?.wrapText) s.whiteSpace = 'nowrap'
 
   return s
 }
